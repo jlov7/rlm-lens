@@ -122,6 +122,7 @@ Current live endpoints (as of February 24, 2026):
 
 ### Showcase
 - [`docs/showboat/rlm_lens_release_demo.md`](docs/showboat/rlm_lens_release_demo.md)
+- [`docs/releases/v0.1.0.md`](docs/releases/v0.1.0.md)
 
 ## License
 MIT (`LICENSE`)

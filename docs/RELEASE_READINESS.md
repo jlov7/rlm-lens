@@ -81,3 +81,14 @@ Last full verification: **February 24, 2026**
 - Verified by:
 - Gate results summary:
 - Go/No-go decision:
+
+## Latest sign-off (v0.1.0)
+
+- Release candidate commit: `4064b9c`
+- Date: February 24, 2026
+- Verified by: Codex
+- Gate results summary:
+  - `make check` ✅
+  - `make e2e` ✅
+  - `make verify-visual` ✅ (watermark `9:1220`)
+- Go/No-go decision: **Go**
