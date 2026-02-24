@@ -11,7 +11,7 @@
 - `backend/Dockerfile`
 
 ### Required Railway environment variables
-- At least one provider key:
+- Recommended: set at least one provider key on backend:
   - `OPENAI_API_KEY`
   - `ANTHROPIC_API_KEY`
   - `GEMINI_API_KEY` or `GOOGLE_API_KEY`
@@ -27,6 +27,8 @@
 Notes:
 - Railway `PORT` is supported automatically; setting `RLM_LENS_BACKEND_PORT` is optional.
 - `RLM_LENS_RELOAD` defaults to off in production.
+- If no backend key is configured, runs can still execute with hosted BYOK session keys.
+- Provider execution depends on installed `rlm` backend compatibility for the selected provider/model; unsupported combinations surface runtime fallback warnings.
 
 ### Healthcheck
 - Path: `/api/health`
@@ -43,6 +45,7 @@ Notes:
 - Frontend supports per-run session key input.
 - Key is sent as `X-RLM-LENS-PROVIDER-KEY` only on run creation.
 - Key is not written into backend DB run config payloads.
+- Trust boundary: backend host/proxies still receive this header in transit and may log request metadata unless explicitly configured not to.
 - Recommended for public demos where users want to test with their own key without sharing it as a persisted app secret.
 
 ## 3) Post-deploy smoke checks

@@ -252,3 +252,19 @@ Execution checklist:
 - [x] Ship frontend provider selector/model presets and session-only key vault UX.
 - [x] Update docs: README, security/privacy, deployment guide, API spec, env vars.
 - [x] Run full quality gates (`make check`, `make e2e`, `make verify-visual`) and resolve failures.
+
+## Public Readiness Hardening Pass (2026-02-24)
+
+Status: Completed
+
+Objective:
+- Close final pre-public risks: dependency advisories, provider capability wording precision, and hosted BYOK trust boundary clarity.
+
+Completed:
+- Frontend dependency chain upgraded (Vite/ESLint/Vitest stack) and advisory scan cleared.
+- Public docs hardened to prevent provider-overstatement ambiguity.
+- Hosted BYOK trust boundary explicitly documented (not persisted by app, but still transits hosted backend/edge infrastructure).
+- Verification rerun after changes:
+  - `make check` ✅
+  - `make e2e` ✅
+  - `make verify-visual` ✅ (`watermark=9:1220`)

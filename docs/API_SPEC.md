@@ -18,6 +18,7 @@ Response 200:
 
 ### GET `/api/diagnostics`
 Returns local runtime readiness and provider key presence for frontend warnings.
+Provider entries advertise selectable options; real execution compatibility is validated at run time and unsupported combinations degrade to fallback warnings.
 
 Response 200:
 ```json
@@ -164,6 +165,7 @@ Start a run (chat query).
 Optional header for hosted BYOK:
 - `X-RLM-LENS-PROVIDER-KEY: <user key>`
 - Behavior: key is used for that run only and is not persisted in DB/runtime config.
+- Trust boundary: hosted backend/edge infrastructure still terminates the request and can observe headers in transit/log pipelines.
 
 Request:
 ```json

@@ -10,6 +10,7 @@
 - Supported providers include native labs and gateways:
   - Native: OpenAI, Anthropic, Gemini, xAI
   - OpenAI-compatible gateways: OpenRouter, Together, Groq, Fireworks
+  - Runtime compatibility is validated at execution time; unsupported provider/backend combinations degrade to explicit fallback warnings.
 
 ## 2. Key risks
 1. **Path traversal / arbitrary file reads**
@@ -36,6 +37,7 @@
 - Session-key flow is supported through request header `X-RLM-LENS-PROVIDER-KEY`.
 - Session key is used for the run invocation only and is **not** stored in run config/database.
 - UI keeps session key in memory only (not project files / not exported traces).
+- On hosted deployments, backend operators and network edge layers still terminate requests and can observe headers in transit.
 - For strongest trust, users can self-host backend and set keys via local env.
 
 ### 3.4 Sandbox isolation

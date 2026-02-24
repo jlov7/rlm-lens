@@ -23,8 +23,9 @@ Most AI tooling shows an answer, not the path to the answer. RLM-Lens makes trus
 ## Product highlights
 - Instant demo onboarding: one-click starter corpus materialize + index + workspace handoff.
 - Starter corpus packs: instant demo data without bringing your own corpus.
-- Multi-provider runtime controls: OpenAI, Anthropic, Gemini, xAI, OpenRouter, Together, Groq, Fireworks.
-- Hosted BYOK support: optional session API key input (memory-only, per-run header).
+- Multi-provider runtime controls and diagnostics: OpenAI, Anthropic, Gemini, xAI, OpenRouter, Together, Groq, Fireworks.
+- Provider compatibility guardrails: unsupported provider/backend combinations degrade to explicit fallback warnings.
+- Hosted BYOK support: optional session API key input (memory-only in browser, per-run header, not persisted by app).
 - Onboarding 3.0: guided setup, preflight checks, and profile presets.
 - Evidence UX: side-by-side viewer, citation navigation, context expansion, copy variants.
 - Ops Lab: run compare, corpus watch, policy triage, and eval workflows.
@@ -97,6 +98,9 @@ Config files included:
 - `backend/Dockerfile`
 
 Deployment guide: [`docs/DEPLOYMENT_VERCEL_RAILWAY.md`](docs/DEPLOYMENT_VERCEL_RAILWAY.md)
+
+Hosted trust boundary note:
+- BYOK keys are not persisted by RLM-Lens, but hosted backend operators and edge infrastructure still terminate requests in transit; use trusted/self-hosted backends for strongest assurances.
 
 Current live endpoints (as of February 24, 2026):
 - Frontend: [https://rlm-lens.vercel.app](https://rlm-lens.vercel.app)
