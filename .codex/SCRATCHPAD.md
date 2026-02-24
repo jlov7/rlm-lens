@@ -1,6 +1,6 @@
 ## Current Task
 
-Final world-class polish and release closure: remove remaining first-run friction, close release checklist evidence, and re-verify all deterministic gates.
+Multi-provider runtime expansion + secure hosted BYOK flow for Vercel/Railway demos.
 
 ## Status
 
@@ -8,20 +8,18 @@ Completed
 
 ## Plan
 
-1. [x] Open final execution tracker (`docs/plans/2026-02-24-final-polish-and-release-closure.md`)
-2. [x] Implement one-click instant demo onboarding flow
-3. [x] Add workspace shortcut/help affordance for power users
-4. [x] Add/extend frontend tests for new behavior
-5. [x] Update release-readiness evidence and docs
-6. [x] Run `make check`, `make e2e`, `make verify-visual` and resolve failures
+1. [x] Add failing tests for provider diagnostics/contracts (backend + frontend)
+2. [x] Implement backend provider catalog + adapter key requirements
+3. [x] Implement per-run secure provider key header handling (not persisted)
+4. [x] Expand frontend provider UX and add session key vault
+5. [x] Update docs/env/deployment guidance
+6. [x] Run `make check`, `make e2e`, `make verify-visual`
 
 ## Decisions Made
 
-- Keep this pass focused on high-impact UX and launch readiness, not architecture changes.
-- Preserve deterministic test mode behavior while adding first-run acceleration.
-- Deploy split architecture live: Railway backend + Vercel frontend.
-- Use npm commands on Vercel build image to avoid pnpm registry/runtime incompatibilities.
+- Keep key handling ephemeral: send key via run header only, avoid DB persistence.
+- Use a curated provider list (frontier labs + key OpenAI-compatible gateways).
 
 ## Open Questions
 
-- None blocking; user pre-approved full autonomous execution.
+- None blocking.

@@ -97,4 +97,18 @@ describe('Onboarding instant demo', () => {
       })
     );
   });
+
+  it('shows multiple provider options in model step', async () => {
+    render(<Onboarding onReady={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(listStarterCorpora).toHaveBeenCalled();
+    });
+
+    await userEvent.click(screen.getByRole('button', { name: /^Continue$/ }));
+    expect(screen.getByRole('heading', { name: /provider and model/i })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: /OpenAI/i })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: /Anthropic/i })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: /OpenRouter/i })).toBeInTheDocument();
+  });
 });

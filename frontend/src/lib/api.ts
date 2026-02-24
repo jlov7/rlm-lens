@@ -21,12 +21,13 @@ import type {
 const BASE_URL = import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8765';
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers ?? {}),
-    },
     ...init,
+    headers,
   });
   if (!res.ok) {
     const text = await res.text();
@@ -91,8 +92,14 @@ export async function createRun(payload: {
   corpus_id: string;
   messages: { role: 'user'; content: string }[];
   runtime: RuntimeConfig;
-}): Promise<{ run_id: string; status: string }> {
-  return request('/api/runs', { method: 'POST', body: JSON.stringify(payload) });
+}, options?: { providerKey?: string }): Promise<{ run_id: string; status: string }> {
+  const providerKey = options?.providerKey?.trim();
+  const headers = providerKey
+    ? {
+        'X-RLM-LENS-PROVIDER-KEY': providerKey,
+      }
+    : undefined;
+  return request('/api/runs', { method: 'POST', headers, body: JSON.stringify(payload) });
 }
 
 export async function getRun(runId: string): Promise<RunDetail> {

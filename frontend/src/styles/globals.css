@@ -567,6 +567,31 @@ textarea {
   gap: 8px;
 }
 
+.session-key-card {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(5, 18, 29, 0.74);
+  padding: 10px;
+  display: grid;
+  gap: 7px;
+}
+
+.session-key-card label {
+  display: grid;
+  gap: 5px;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.session-key-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .target-pills {
   display: flex;
   flex-wrap: wrap;

@@ -22,7 +22,8 @@ Get from zero to first trusted answer as fast as possible.
 - `Deep investigation`: highest coverage for difficult questions.
 
 ## Preflight checks
-- API key present (`OPENAI_API_KEY`).
+- API key present for selected provider (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`, etc.).
+- Optional hosted BYOK: set `Session API key` in workspace composer (memory-only, per-run header).
 - Docker running (optional but recommended).
 - Corpus path valid.
 

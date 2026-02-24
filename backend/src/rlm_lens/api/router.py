@@ -3,12 +3,12 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse, StreamingResponse
 import json
-import os
 from pathlib import Path
 from typing import Any
 
 from ..ids import make_id
 from ..models import CreateCorpusRequest, CreateRunRequest
+from ..providers import SESSION_PROVIDER_KEY_HEADER, build_provider_diagnostics, normalize_provider_api_key
 from ..runtime.environment import get_environment_status
 from ..utils import now_iso
 from .common import get_services, sse_response
@@ -29,12 +29,10 @@ async def health() -> dict[str, str]:
 
 
 @router.get("/diagnostics")
-async def diagnostics() -> dict[str, object]:
+async def diagnostics(selected_provider: str | None = Query(default=None)) -> dict[str, object]:
     env_status = get_environment_status()
     return {
-        "provider": {
-            "openai_api_key_present": bool(os.getenv("OPENAI_API_KEY")),
-        },
+        "provider": build_provider_diagnostics(selected_provider=selected_provider),
         "environment": {
             "docker_installed": env_status.docker_installed,
             "docker_running": env_status.docker_running,
@@ -250,6 +248,7 @@ async def create_run(payload: CreateRunRequest, request: Request) -> dict[str, s
     if services.db.fetchone("SELECT id FROM corpora WHERE id = ?", (payload.corpus_id,)) is None:
         raise HTTPException(status_code=404, detail="Corpus not found")
 
+    provider_api_key = normalize_provider_api_key(request.headers.get(SESSION_PROVIDER_KEY_HEADER))
     run_id = make_id("run")
     snapshot_hash = services.db.fetch_value("SELECT last_snapshot_hash FROM corpora WHERE id = ?", (payload.corpus_id,))
     services.db.execute(
@@ -266,7 +265,7 @@ async def create_run(payload: CreateRunRequest, request: Request) -> dict[str, s
             (run_id, message.role, message.content, now_iso()),
         )
 
-    services.spawn(services.runner.run(run_id))
+    services.spawn(services.runner.run(run_id, provider_api_key=provider_api_key))
     return {"run_id": run_id, "status": "running"}
 
 

@@ -236,3 +236,19 @@ Outcome:
   - `make check`
   - `make e2e`
   - `make verify-visual` (`watermark=9:1220`)
+
+## Multi-Provider + Secure BYOK Expansion (2026-02-24)
+
+Status: Completed
+Tracker: `docs/plans/2026-02-24-multi-provider-byok-world-class.md`
+
+Objective:
+- Add production-grade multi-provider ergonomics and secure hosted BYOK handling for demo/public usage.
+
+Execution checklist:
+- [x] Introduce backend provider catalog and diagnostics metadata for key presence across providers.
+- [x] Extend runtime adapter/provider validation beyond OpenAI-only assumptions.
+- [x] Add non-persistent per-run provider key flow via request headers.
+- [x] Ship frontend provider selector/model presets and session-only key vault UX.
+- [x] Update docs: README, security/privacy, deployment guide, API spec, env vars.
+- [x] Run full quality gates (`make check`, `make e2e`, `make verify-visual`) and resolve failures.

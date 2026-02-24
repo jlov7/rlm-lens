@@ -11,6 +11,12 @@
 - Ask for explicit citation requirements.
 - Request output format (bullets/table/deltas).
 
+## Provider and key workflow
+- Choose provider + model in the command panel before running.
+- Preferred production mode: configure provider key as backend env var.
+- Hosted demo mode: enter `Session API key` in the workspace.
+- Session key behavior: in-memory only in the browser and sent only on run requests.
+
 ## Shortcuts and commands
 - Keyboard: `Cmd/Ctrl+Enter` runs query, `Shift+Cmd/Ctrl+Enter` runs fast profile, `?` opens shortcuts, `Esc` closes modals.
 - Slash commands: `/compare`, `/watch`, `/evaluate` route directly to Ops workflows.

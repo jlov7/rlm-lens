@@ -22,7 +22,35 @@ Returns local runtime readiness and provider key presence for frontend warnings.
 Response 200:
 ```json
 {
-  "provider": { "openai_api_key_present": true },
+  "provider": {
+    "selected": "openai",
+    "openai_api_key_present": true,
+    "keys_present": {
+      "openai": true,
+      "anthropic": false,
+      "gemini": false,
+      "xai": false,
+      "openrouter": false,
+      "together": false,
+      "groq": false,
+      "fireworks": false
+    },
+    "available": [
+      {
+        "id": "openai",
+        "label": "OpenAI",
+        "transport": "native",
+        "default_model": "gpt-5-nano",
+        "recommended_models": ["gpt-5-mini", "gpt-5-nano"],
+        "key_env_var": "OPENAI_API_KEY",
+        "key_env_vars": ["OPENAI_API_KEY"],
+        "key_present": true
+      }
+    ],
+    "byok_header_supported": true,
+    "byok_header_name": "X-RLM-LENS-PROVIDER-KEY",
+    "session_key_storage": "ephemeral_request_header_only"
+  },
   "environment": { "docker_installed": true, "docker_running": true }
 }
 ```
@@ -132,6 +160,11 @@ Event payload example:
 ## 4. Runs
 ### POST `/api/runs`
 Start a run (chat query).
+
+Optional header for hosted BYOK:
+- `X-RLM-LENS-PROVIDER-KEY: <user key>`
+- Behavior: key is used for that run only and is not persisted in DB/runtime config.
+
 Request:
 ```json
 {

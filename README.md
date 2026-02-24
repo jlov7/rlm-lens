@@ -23,6 +23,8 @@ Most AI tooling shows an answer, not the path to the answer. RLM-Lens makes trus
 ## Product highlights
 - Instant demo onboarding: one-click starter corpus materialize + index + workspace handoff.
 - Starter corpus packs: instant demo data without bringing your own corpus.
+- Multi-provider runtime controls: OpenAI, Anthropic, Gemini, xAI, OpenRouter, Together, Groq, Fireworks.
+- Hosted BYOK support: optional session API key input (memory-only, per-run header).
 - Onboarding 3.0: guided setup, preflight checks, and profile presets.
 - Evidence UX: side-by-side viewer, citation navigation, context expansion, copy variants.
 - Ops Lab: run compare, corpus watch, policy triage, and eval workflows.
@@ -58,7 +60,7 @@ flowchart LR
 2. Environment
 ```bash
 cp .env.example .env
-# set OPENAI_API_KEY=...
+# set one or more provider keys (OPENAI_API_KEY / ANTHROPIC_API_KEY / OPENROUTER_API_KEY / ...)
 ```
 
 3. Run

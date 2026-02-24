@@ -11,7 +11,15 @@
 - `backend/Dockerfile`
 
 ### Required Railway environment variables
-- `OPENAI_API_KEY`
+- At least one provider key:
+  - `OPENAI_API_KEY`
+  - `ANTHROPIC_API_KEY`
+  - `GEMINI_API_KEY` or `GOOGLE_API_KEY`
+  - `XAI_API_KEY`
+  - `OPENROUTER_API_KEY`
+  - `TOGETHER_API_KEY`
+  - `GROQ_API_KEY`
+  - `FIREWORKS_API_KEY`
 - `RLM_LENS_BACKEND_HOST=0.0.0.0`
 - `RLM_LENS_DATA_DIR=/data/rlm-lens` (attach a persistent volume)
 - `RLM_LENS_CORS_ORIGINS=https://<your-vercel-domain>`
@@ -30,6 +38,12 @@ Notes:
 
 ### Required Vercel environment variable
 - `VITE_API_BASE=https://<your-railway-backend-domain>`
+
+### Hosted BYOK option (no server-side persistence)
+- Frontend supports per-run session key input.
+- Key is sent as `X-RLM-LENS-PROVIDER-KEY` only on run creation.
+- Key is not written into backend DB run config payloads.
+- Recommended for public demos where users want to test with their own key without sharing it as a persisted app secret.
 
 ## 3) Post-deploy smoke checks
 1. Open Vercel URL.

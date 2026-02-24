@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { createCorpus, getDiagnostics, getIndexJob, listStarterCorpora, materializeStarterCorpus } from '../lib/api';
+import {
+  providerDefaultModel,
+  providerEnvHint,
+  providerKeyReady,
+  providerLabel,
+  providerOptionsFromDiagnostics,
+} from '../lib/providers';
 import type { Diagnostics, RuntimeConfig, StarterCorpusPack } from '../lib/types';
 
 type Step = 1 | 2 | 3 | 4;
@@ -225,6 +232,10 @@ export function Onboarding({
     if (step === 1) return name.trim().length > 0 && path.trim().length > 0;
     return true;
   }, [name, path, step]);
+  const providerOptions = useMemo(() => providerOptionsFromDiagnostics(diagnostics), [diagnostics]);
+  const activeProviderLabel = useMemo(() => providerLabel(runtime.provider, diagnostics), [diagnostics, runtime.provider]);
+  const activeProviderEnvHint = useMemo(() => providerEnvHint(runtime.provider, diagnostics), [diagnostics, runtime.provider]);
+  const activeProviderKeyReady = useMemo(() => providerKeyReady(runtime.provider, diagnostics), [diagnostics, runtime.provider]);
 
   const indexRatio = indexTotal > 0 ? Math.min(1, indexDone / indexTotal) : 0;
 
@@ -508,9 +519,19 @@ export function Onboarding({
                 Provider
                 <select
                   value={runtime.provider}
-                  onChange={(event) => setRuntime((prev) => ({ ...prev, provider: event.target.value }))}
+                  onChange={(event) =>
+                    setRuntime((prev) => ({
+                      ...prev,
+                      provider: event.target.value,
+                      model: providerDefaultModel(event.target.value, diagnostics),
+                    }))
+                  }
                 >
-                  <option value="openai">OpenAI</option>
+                  {providerOptions.map((provider) => (
+                    <option key={provider.id} value={provider.id}>
+                      {provider.label}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label>
@@ -669,8 +690,8 @@ export function Onboarding({
           <h3>Preflight checklist</h3>
           <ul>
             <li>
-              API key: {diagnostics?.provider.openai_api_key_present ? 'ready' : 'missing'}
-              <small> Set `OPENAI_API_KEY` in `.env` and restart services if missing.</small>
+              API key ({activeProviderLabel}): {activeProviderKeyReady ? 'ready' : 'missing'}
+              <small> Set `{activeProviderEnvHint}` in `.env`, or use a session key in the workspace.</small>
             </li>
             <li>
               Docker runtime: {diagnostics?.environment.docker_running ? 'ready' : 'not running'}

@@ -32,7 +32,7 @@ class RuntimeRunner:
         self.data_dir = data_dir
         self.reader = CorpusReader(db)
 
-    async def run(self, run_id: str) -> None:
+    async def run(self, run_id: str, provider_api_key: str | None = None) -> None:
         run = self.db.fetchone("SELECT id, corpus_id, runtime_config_json FROM runs WHERE id = ?", (run_id,))
         if run is None:
             return
@@ -43,7 +43,12 @@ class RuntimeRunner:
         provider = str(runtime_config.get("provider", "openai"))
         environment = str(runtime_config.get("environment", "docker"))
         model = str(runtime_config.get("model", "gpt-5-nano"))
-        adapter = RLMAdapter(model=model, provider=provider, environment=environment)
+        adapter = RLMAdapter(
+            model=model,
+            provider=provider,
+            environment=environment,
+            provider_api_key=provider_api_key,
+        )
 
         self.db.execute("UPDATE runs SET status = ?, started_at = ? WHERE id = ?", ("running", now_iso(), run_id))
         await logger.log_status("running")

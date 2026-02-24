@@ -75,6 +75,17 @@ export type RuntimeConfig = {
   };
 };
 
+export type ProviderOption = {
+  id: string;
+  label: string;
+  transport: 'native' | 'openai_compatible';
+  default_model: string;
+  recommended_models: string[];
+  key_env_vars: string[];
+  key_env_var: string;
+  key_present: boolean;
+};
+
 export type TraceEvent = {
   type: string;
   timestamp: string;
@@ -84,6 +95,12 @@ export type TraceEvent = {
 export type Diagnostics = {
   provider: {
     openai_api_key_present: boolean;
+    selected?: string;
+    keys_present?: Record<string, boolean>;
+    available?: ProviderOption[];
+    byok_header_supported?: boolean;
+    byok_header_name?: string;
+    session_key_storage?: string;
   };
   environment: {
     docker_installed: boolean;

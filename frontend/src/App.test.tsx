@@ -45,4 +45,15 @@ describe('App operations deck', () => {
       expect(screen.queryByTestId('shortcuts-modal')).not.toBeInTheDocument();
     });
   });
+
+  it('renders session key input for secure BYOK runs', async () => {
+    window.history.pushState({}, '', '/?test_mode=1&static=1');
+    render(<App />);
+
+    await waitFor(() => {
+      expect(window.__READY).toBe(true);
+    });
+
+    expect(screen.getByLabelText(/session api key/i)).toBeInTheDocument();
+  });
 });

@@ -27,6 +27,14 @@ import {
   stopCorpusWatch,
   subscribeRunEvents,
 } from './lib/api';
+import {
+  FALLBACK_PROVIDER_OPTIONS,
+  providerDefaultModel,
+  providerEnvHint,
+  providerKeyReady,
+  providerLabel,
+  providerOptionsFromDiagnostics,
+} from './lib/providers';
 import type {
   Citation,
   Corpus,
@@ -327,9 +335,20 @@ function fixtureCitations(): Citation[] {
 }
 
 function testDiagnostics(simulateNoKey: boolean, simulateDockerMissing: boolean): Diagnostics {
+  const available = FALLBACK_PROVIDER_OPTIONS.map((provider) => ({
+    ...provider,
+    key_present: provider.id === 'openai' ? !simulateNoKey : false,
+  }));
+  const keysPresent = Object.fromEntries(available.map((provider) => [provider.id, provider.key_present]));
   return {
     provider: {
       openai_api_key_present: !simulateNoKey,
+      selected: 'openai',
+      keys_present: keysPresent,
+      available,
+      byok_header_supported: true,
+      byok_header_name: 'X-RLM-LENS-PROVIDER-KEY',
+      session_key_storage: 'ephemeral_request_header_only',
     },
     environment: {
       docker_installed: !simulateDockerMissing,
@@ -509,6 +528,7 @@ function App() {
   const [sharePreview, setSharePreview] = useState<Record<string, unknown> | null>(null);
   const [runAnnouncement, setRunAnnouncement] = useState('Idle');
   const [showShortcutHelp, setShowShortcutHelp] = useState(false);
+  const [sessionProviderKeys, setSessionProviderKeys] = useState<Record<string, string>>({});
 
   useEffect(() => {
     window.__READY = false;
@@ -719,6 +739,10 @@ function App() {
       groundingClaimsTotal,
       groundingUngroundedClaims,
       diagnostics,
+      provider: runtime.provider,
+      providerLabel: providerLabel(runtime.provider, diagnostics),
+      providerKeyReady:
+        providerKeyReady(runtime.provider, diagnostics) || (sessionProviderKeys[runtime.provider] ?? '').trim().length > 0,
       connectionState,
       operationsTab,
       workspaceMode,
@@ -748,6 +772,7 @@ function App() {
     groundingUngroundedClaims,
     isStaticMode,
     isTestMode,
+    runtime.provider,
     operationsTab,
     workspaceMode,
     qualityMode,
@@ -765,6 +790,7 @@ function App() {
     runStatus,
     runs.length,
     runtimeWarnings,
+    sessionProviderKeys,
     selectedCorpusId,
     selectedRunId,
   ]);
@@ -833,6 +859,15 @@ function App() {
   const queryWarnings = useMemo(() => lintQuery(question), [question]);
   const impact = useMemo(() => budgetImpact(runtime), [runtime]);
   const shortcut = useMemo(() => commandShortcut(question), [question]);
+  const providerOptions = useMemo(() => providerOptionsFromDiagnostics(diagnostics), [diagnostics]);
+  const selectedProviderLabel = useMemo(() => providerLabel(runtime.provider, diagnostics), [diagnostics, runtime.provider]);
+  const selectedProviderEnvHint = useMemo(() => providerEnvHint(runtime.provider, diagnostics), [diagnostics, runtime.provider]);
+  const selectedProviderKeyReady = useMemo(() => providerKeyReady(runtime.provider, diagnostics), [diagnostics, runtime.provider]);
+  const sessionProviderKey = useMemo(() => sessionProviderKeys[runtime.provider] ?? '', [runtime.provider, sessionProviderKeys]);
+  const runtimeProviderKeyReady = useMemo(
+    () => selectedProviderKeyReady || sessionProviderKey.trim().length > 0,
+    [selectedProviderKeyReady, sessionProviderKey]
+  );
   const parsedAnswer = useMemo(() => parseAnswerSections(answer), [answer]);
   const nextPrompts = useMemo(() => followUpSuggestions(question, parsedAnswer.details), [parsedAnswer.details, question]);
   const completeness = useMemo(() => {
@@ -977,6 +1012,8 @@ function App() {
         corpus_id: selectedCorpusId,
         messages: [{ role: 'user', content: question }],
         runtime,
+      }, {
+        providerKey: sessionProviderKey.trim().length > 0 ? sessionProviderKey : undefined,
       });
       setSelectedRunId(run.run_id);
 
@@ -1285,6 +1322,7 @@ function App() {
       </header>
 
       <section className="status-grid status-ribbon" aria-label="Runtime status">
+        <span className="status-pill">Provider {selectedProviderLabel}</span>
         <span className="status-pill">Model {runtime.model}</span>
         <span className="status-pill">Budget {runtime.budgets.max_wall_time_s}s</span>
         <span className="status-pill">Subcalls {runtime.budgets.max_subcalls}</span>
@@ -1346,10 +1384,10 @@ function App() {
       </section>
 
       <section className="banner-stack" aria-live="polite">
-        {!diagnostics?.provider.openai_api_key_present ? (
+        {!runtimeProviderKeyReady ? (
           <div className="banner warning" data-testid="missing-key-banner">
             <AlertTriangle size={16} />
-            OPENAI_API_KEY is missing. Runs will use fallback behavior.
+            {selectedProviderEnvHint} is missing for {selectedProviderLabel}. Runs will use fallback behavior.
           </div>
         ) : null}
 
@@ -1704,6 +1742,78 @@ function App() {
                 </div>
               </>
             ) : null}
+
+            <div className="budget-row" aria-label="Provider controls">
+              <label>
+                Provider
+                <select
+                  value={runtime.provider}
+                  onChange={(event) =>
+                    setRuntime((prev) => ({
+                      ...prev,
+                      provider: event.target.value,
+                      model: providerDefaultModel(event.target.value, diagnostics),
+                    }))
+                  }
+                >
+                  {providerOptions.map((provider) => (
+                    <option key={provider.id} value={provider.id}>
+                      {provider.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Model
+                <input
+                  value={runtime.model}
+                  onChange={(event) => setRuntime((prev) => ({ ...prev, model: event.target.value }))}
+                />
+              </label>
+            </div>
+
+            <div className="session-key-card" aria-label="Session key vault">
+              <label>
+                Session API key
+                <input
+                  type="password"
+                  autoComplete="off"
+                  value={sessionProviderKey}
+                  onChange={(event) =>
+                    setSessionProviderKeys((prev) => ({
+                      ...prev,
+                      [runtime.provider]: event.target.value,
+                    }))
+                  }
+                  placeholder={`Optional ${selectedProviderLabel} key for this browser session`}
+                  aria-label="Session API key"
+                />
+              </label>
+              <p className="hint-copy">
+                Stored in memory only and sent only when you run a query. The key is never written to local files or run
+                records.
+              </p>
+              <div className="session-key-actions">
+                <span className="status-pill">
+                  {sessionProviderKey.trim().length > 0
+                    ? `Session key loaded for ${selectedProviderLabel}`
+                    : `Using ${selectedProviderEnvHint} from backend env`}
+                </span>
+                <button
+                  type="button"
+                  className="ghost-btn small"
+                  onClick={() =>
+                    setSessionProviderKeys((prev) => ({
+                      ...prev,
+                      [runtime.provider]: '',
+                    }))
+                  }
+                  disabled={sessionProviderKey.trim().length === 0}
+                >
+                  Clear session key
+                </button>
+              </div>
+            </div>
 
             <div className="actions">
               <button type="button" className="primary-btn" onClick={() => void runQuery()} disabled={busy}>
