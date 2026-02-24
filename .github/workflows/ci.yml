@@ -6,6 +6,8 @@ on:
 
 jobs:
   check:
+    # Private repos can be billing-blocked for hosted runners; skip until billing/public switch.
+    if: ${{ github.event.repository.private == false || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +32,7 @@ jobs:
         run: make check
 
   e2e:
+    if: ${{ github.event.repository.private == false || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     needs: check
     steps:
