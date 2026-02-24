@@ -102,7 +102,7 @@ Request:
 ```json
 {
   "name": "My Repo",
-  "path": "/Users/me/projects/repo",
+  "path": "/path/to/repo",
   "index_config": {
     "include_globs": ["**/*.md", "**/*.py", "**/*.ts", "**/*.tsx"],
     "exclude_globs": ["**/node_modules/**", "**/.git/**"],

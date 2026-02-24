@@ -29,19 +29,19 @@ Already up to date
 ╰──────────────────────────────────────────────────────────────────────────────╯
 Done in 209ms using pnpm v10.29.3
 
-> rlm-lens-frontend@0.1.0 lint /Users/jasonlovell/AI/RL-Lens/frontend
+> rlm-lens-frontend@0.1.0 lint /workspace/RL-Lens/frontend
 > eslint .
 
 
-> rlm-lens-frontend@0.1.0 typecheck /Users/jasonlovell/AI/RL-Lens/frontend
+> rlm-lens-frontend@0.1.0 typecheck /workspace/RL-Lens/frontend
 > tsc --noEmit
 
 
-> rlm-lens-frontend@0.1.0 test /Users/jasonlovell/AI/RL-Lens/frontend
+> rlm-lens-frontend@0.1.0 test /workspace/RL-Lens/frontend
 > vitest run
 
 
- RUN  v2.1.9 /Users/jasonlovell/AI/RL-Lens/frontend
+ RUN  v2.1.9 /workspace/RL-Lens/frontend
 
  ✓ src/components/TracePanel.perf.test.tsx (1 test) 8ms
  ✓ src/components/VirtualizedList.test.tsx (1 test) 14ms

@@ -16,6 +16,12 @@ test-results/
 # Env
 .env
 
+# Agent/planning workspace artifacts
+.agents/
+.codex/
+plans/
+docs/plans/
+
 # App data
 .rlm-lens/
 .rlm-lens-*

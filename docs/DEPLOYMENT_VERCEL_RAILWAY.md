@@ -73,7 +73,7 @@ Validated:
 Deployment commands used:
 ```bash
 # Railway
-railway init --name rlm-lens --workspace "Jase Lovell's Projects" --json
+railway init --name rlm-lens --workspace "<your-railway-workspace>" --json
 railway add --service backend --json
 railway service link backend
 railway volume add -m /data --json
