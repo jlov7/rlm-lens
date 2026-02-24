@@ -1,0 +1,10 @@
+interface:
+  display_name: "RLM-Lens Builder"
+  short_description: "Build the RLM-Lens app end-to-end with high UX polish, tests, and docs."
+  icon_small: "./assets/icon_small.svg"
+  icon_large: "./assets/icon_large.png"
+  brand_color: "#14B8A6"
+  default_prompt: |
+    Build RLM-Lens end-to-end following docs/PRD.md and docs/UX_SPEC.md. Use worktree mode if available.
+policy:
+  allow_implicit_invocation: false

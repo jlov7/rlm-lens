@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RLM-Lens Trace JSONL Entry",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "type",
+        "timestamp",
+        "root_model",
+        "max_depth",
+        "max_iterations",
+        "backend",
+        "backend_kwargs",
+        "environment_type",
+        "environment_kwargs"
+      ],
+      "properties": {
+        "type": {
+          "const": "metadata"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "root_model": {
+          "type": "string"
+        },
+        "max_depth": {
+          "type": "integer"
+        },
+        "max_iterations": {
+          "type": "integer"
+        },
+        "backend": {
+          "type": "string"
+        },
+        "backend_kwargs": {
+          "type": "object"
+        },
+        "environment_type": {
+          "type": "string"
+        },
+        "environment_kwargs": {
+          "type": "object"
+        },
+        "other_backends": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    {
+      "type": "object",
+      "required": [
+        "type",
+        "timestamp",
+        "iteration",
+        "prompt",
+        "response",
+        "code_blocks"
+      ],
+      "properties": {
+        "type": {
+          "const": "iteration"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "iteration": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prompt": {},
+        "response": {
+          "type": "string"
+        },
+        "final_answer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "iteration_time": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "code_blocks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "code",
+              "result"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "result": {
+                "type": "object",
+                "required": [
+                  "stdout",
+                  "stderr",
+                  "locals",
+                  "execution_time",
+                  "rlm_calls",
+                  "final_answer"
+                ],
+                "properties": {
+                  "stdout": {
+                    "type": "string"
+                  },
+                  "stderr": {
+                    "type": "string"
+                  },
+                  "locals": {
+                    "type": "object"
+                  },
+                  "execution_time": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "rlm_calls": {
+                    "type": "array"
+                  },
+                  "final_answer": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  ]
+}

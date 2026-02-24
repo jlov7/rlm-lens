@@ -1,0 +1,27 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+.build/
+playwright-report/
+test-results/
+
+# Env
+.env
+
+# App data
+.rlm-lens/
+.rlm-lens-*
+*.log
+output/playwright/
+
+# OS
+.DS_Store
+.vercel

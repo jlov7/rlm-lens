@@ -1,0 +1,34 @@
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  testMatch: 'visual.spec.ts',
+  snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{projectName}-{arg}{ext}',
+  timeout: 90_000,
+  retries: 0,
+  use: {
+    baseURL: 'http://127.0.0.1:5173',
+    trace: 'retain-on-failure',
+    viewport: { width: 1600, height: 1000 },
+  },
+  expect: {
+    toHaveScreenshot: {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    },
+  },
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+  ],
+});

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="420" viewBox="0 0 980 420">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="980" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#13213A"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#5EEAD4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+    <style>
+      .title { font: 700 20px 'Arial', sans-serif; fill: #E6F0FF; }
+      .label { font: 600 14px 'Arial', sans-serif; fill: #E6F0FF; }
+      .small { font: 500 12px 'Arial', sans-serif; fill: #B9C6E4; }
+      .box { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.18); stroke-width: 1; rx: 14; }
+      .accentBox { fill: rgba(20,184,166,0.12); stroke: rgba(94,234,212,0.55); stroke-width: 1.2; rx: 14; }
+      .arrow { stroke: rgba(94,234,212,0.75); stroke-width: 2.2; fill: none; }
+      .mutedArrow { stroke: rgba(185,198,228,0.45); stroke-width: 2; fill: none; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="rgba(94,234,212,0.85)"/>
+    </marker>
+    <marker id="arrowheadMuted" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="rgba(185,198,228,0.55)"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="980" height="420" rx="22" fill="url(#bg)"/>
+
+  <text x="36" y="52" class="title">RLM-Lens — System Architecture</text>
+  <text x="36" y="78" class="small">Index → Ask → Trace → Evidence → Export</text>
+
+  <!-- UI -->
+  <rect x="40" y="140" width="220" height="120" class="accentBox" filter="url(#shadow)"/>
+  <text x="60" y="178" class="label">Frontend</text>
+  <text x="60" y="202" class="small">React + TypeScript</text>
+  <text x="60" y="222" class="small">Onboarding • Chat</text>
+  <text x="60" y="242" class="small">Evidence • Trace Graph</text>
+
+  <!-- API -->
+  <rect x="320" y="120" width="260" height="160" class="accentBox" filter="url(#shadow)"/>
+  <text x="342" y="158" class="label">Backend API</text>
+  <text x="342" y="182" class="small">FastAPI • WebSocket/SSE</text>
+  <text x="342" y="202" class="small">Runs • Index • Export</text>
+  <text x="342" y="222" class="small">Budget governor</text>
+  <text x="342" y="242" class="small">Trace streaming</text>
+
+  <!-- Storage -->
+  <rect x="640" y="70" width="300" height="120" class="box" filter="url(#shadow)"/>
+  <text x="662" y="108" class="label">Local Storage</text>
+  <text x="662" y="132" class="small">SQLite DB (runs, events, citations)</text>
+  <text x="662" y="152" class="small">SQLite FTS5 (corpus search)</text>
+  <text x="662" y="172" class="small">Trace JSONL per run</text>
+
+  <!-- Runtime -->
+  <rect x="640" y="230" width="300" height="150" class="box" filter="url(#shadow)"/>
+  <text x="662" y="268" class="label">RLM Runtime</text>
+  <text x="662" y="292" class="small">rlms library (RLM)</text>
+  <text x="662" y="312" class="small">Sandbox: Docker (default) / Local fallback</text>
+  <text x="662" y="332" class="small">lens tools: search/read/peek/list</text>
+  <text x="662" y="352" class="small">LensLogger: JSONL + live events</text>
+
+  <!-- Arrows -->
+  <path d="M260 200 C285 200, 295 200, 320 200" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="268" y="190" class="small">REST/WS</text>
+
+  <path d="M580 170 C610 170, 620 170, 640 170" class="mutedArrow" marker-end="url(#arrowheadMuted)"/>
+  <text x="590" y="160" class="small">DB/FTS</text>
+
+  <path d="M580 240 C610 240, 620 260, 640 280" class="mutedArrow" marker-end="url(#arrowheadMuted)"/>
+  <text x="588" y="252" class="small">run</text>
+
+  <path d="M790 230 C790 210, 790 200, 790 190" class="arrow" marker-end="url(#arrowhead)"/>
+  <text x="804" y="215" class="small">trace + usage</text>
+
+</svg>
