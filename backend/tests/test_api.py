@@ -74,6 +74,41 @@ def test_create_corpus_and_run(tmp_path: Path) -> None:
         assert len(run["citations"]) >= 1
 
 
+def test_file_slice_returns_client_error_for_missing_file(tmp_path: Path) -> None:
+    corpus_root = tmp_path / "sample_missing_file"
+    corpus_root.mkdir()
+
+    app = create_app()
+    with TestClient(app) as client:
+        corpus_res = client.post(
+            "/api/corpora",
+            json={
+                "name": "missing-file",
+                "path": str(corpus_root),
+                "index_config": {
+                    "include_globs": ["**/*.py"],
+                    "exclude_globs": [],
+                    "max_file_bytes": 100000,
+                },
+                "start_index": False,
+            },
+        )
+        assert corpus_res.status_code == 200
+        corpus_id = corpus_res.json()["corpus_id"]
+
+        response = client.get(
+            "/api/files/slice",
+            params={
+                "corpus_id": corpus_id,
+                "path": "api.py",
+                "start_line": 1,
+                "end_line": 5,
+            },
+        )
+        assert response.status_code == 400
+        assert response.json()["detail"] == "File not found"
+
+
 def test_create_run_uses_ephemeral_provider_key_header(tmp_path: Path) -> None:
     corpus_root = tmp_path / "sample_header"
     corpus_root.mkdir()

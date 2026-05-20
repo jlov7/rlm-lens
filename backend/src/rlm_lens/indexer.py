@@ -329,6 +329,8 @@ class CorpusReader:
         full_path = (root / path).resolve()
         if root.resolve() not in full_path.parents and root.resolve() != full_path:
             raise ValueError("Path traversal is not allowed")
+        if not full_path.is_file():
+            raise ValueError("File not found")
         return full_path.read_text(encoding="utf-8", errors="ignore")
 
     def read_slice(self, corpus_id: str, path: str, start_line: int, end_line: int) -> dict[str, Any]:

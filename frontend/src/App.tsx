@@ -895,10 +895,18 @@ function App() {
       return;
     }
 
-    if (!selectedCorpusId) return;
+    setEvidenceText(citation.snippet || 'Loading file slice...');
+    setActiveCitation(citation);
+    setActiveCitationIndex(typeof index === 'number' ? index : citations.findIndex((item) => item.citation_id === citation.citation_id));
+    setEvidencePadding(padding);
+    setEvidenceOpen(true);
+    setWorkspaceMode('evidence');
+
+    const citationCorpusId = citation.corpus_id || selectedCorpusId;
+    if (!citationCorpusId) return;
     try {
       const slice = await getFileSlice({
-        corpus_id: selectedCorpusId,
+        corpus_id: citationCorpusId,
         path: citation.path,
         start_line: Math.max(1, citation.start_line - padding),
         end_line: citation.end_line + padding + 7,
@@ -907,11 +915,6 @@ function App() {
     } catch {
       setEvidenceText(citation.snippet || 'Unable to load file slice. Showing citation snippet fallback.');
     }
-    setActiveCitation(citation);
-    setActiveCitationIndex(typeof index === 'number' ? index : citations.findIndex((item) => item.citation_id === citation.citation_id));
-    setEvidencePadding(padding);
-    setEvidenceOpen(true);
-    setWorkspaceMode('evidence');
   };
 
   const moveCitation = (direction: -1 | 1) => {
